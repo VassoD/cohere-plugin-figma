@@ -31,7 +31,7 @@ const designerSystemMessage = {
 // could use your api for any general purpose completion and leak the "secret sauce" of
 // your prompt.
 async function buildUserMessage(
-  req: Request
+  req: Request,
 ): Promise<ChatCompletionRequestMessage> {
   const body = await req.json();
   const { layers, systemRole } = CompletionRequestBody.parse(body);

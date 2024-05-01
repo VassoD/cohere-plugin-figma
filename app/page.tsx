@@ -121,7 +121,7 @@ export default function Plugin() {
 
           return node.id;
         },
-        { nodeID, text, textPosition }
+        { nodeID, text, textPosition },
       );
     };
 
@@ -136,7 +136,7 @@ export default function Plugin() {
   };
 
   const handleRoleSelection = (
-    role: "spellcheck" | "grammarChecker" | "designer"
+    role: "spellcheck" | "grammarChecker" | "designer",
   ) => {
     setSystemRole(role);
   };
