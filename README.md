@@ -1,30 +1,29 @@
 ## Overview
 
-This is an Figma AI plugin template that demonstrates streaming LLM responses inside of a Figma plugin. This template shows:
+This is an Figma AI plugin template that demonstrates streaming LLM responses inside of a Figma plugin. This template is customized for integrating with the Cohere API. This template shows:
 
-- Securely storing OpenAI keys / prompts on a server
-- Streaming a GPT completion to an iframe
-- Streaming a GPT completion to a Figma document
+- Securely storing Cohere keys / prompts on a server
+- Streaming a response to an iframe
+- Streaming a response to a Figma document
 - A fully functional React iframe using tailwind and Next.js
 - Deploying your plugin to production
 - Accessing the Figma API directly from the iframe
-
-![Gif of the plugin in action](https://static.figma.com/uploads/cd663ea9256a71040227bc4af94c614febc8fc56)
 
 ## Getting Started
 
 This plugin is set up to use [Next.js](https://nextjs.org/).
 
-First create this template using create-next-app:
+First, create this template using create-next-app:
 
 ```bash
+
 npx create-next-app@latest --example https://github.com/figma/ai-plugin-template/
 ```
 
-Next you need to store you OpenAI API key in the `.env.local` file. You can get an API key from the [API keys page](https://platform.openai.com/account/api-keys). Create a `.env.local` file in the root of this project and add your API key:
+Next you need to store you Cohere API key in the `.env.local` file. Create a `.env.local` file in the root of this project and add your API key:
 
 ```bash
-OPENAI_API_KEY=***
+COHERE_API_KEY=***
 ```
 
 Then, run the development server:
@@ -43,7 +42,7 @@ You can then open up the Figma desktop app and import a plugin from the manifest
 The main files you'll want to edit are:
 
 - `app/page.tsx`: will let you update the plugin `iframe`. The page auto-updates as you edit the file and will let you update the user interface of your plugin.
-- `app/completion/route.ts`: This is the "server" of the plugin and is what talks to OpenAI. This is where you can update the prompt that you are sending to GPT.
+- `app/completion/route.ts`: This is the "server" of the plugin and is what talks to Cohere. This is where you can update the prompt that you are sending to Cohere.
 - `plugin/manifest.json`: this is the [manifest file](https://www.figma.com/plugin-docs/manifest/) that will let you update the permissions and editor types of your plugin.
 
 ## Publishing your plugin
@@ -53,8 +52,7 @@ In this example we will be publishing the Next.js app to [Vercel](https://vercel
 1. If you haven't already, push your code to a git repo on GitHub.
 2. Create an account on Vercel and connect your GitHub account.
 3. Deploy your app to Vercel. You can follow the guide [here](https://vercel.com/docs/concepts/deployments/git).
-4. While deploying make sure to set the environment variable `OPENAI_API_KEY` to your OpenAI API key.
-   ![Photo of environment variable editor](https://static.figma.com/uploads/e41166e6a4e0d9c9c90bf662a609396ab7fe33cc)
+4. While deploying make sure to set the environment variable `COHERE_API_KEY` to your Cohere API key.
 5. Once your app is deployed you can update the `siteURL` section of your `package.json` file to point to the deployed URL. It will look something like `https://your-site-here.vercel.app/`
 
 ```json
@@ -85,7 +83,7 @@ const result = await figmaAPI.run(
     return figma.getNodeById(nodeId)?.name;
   },
   // Any variable you want to pass to the function must be passed as a parameter.
-  { nodeId },
+  { nodeId }
 );
 
 console.log(result); // "Page 1"
@@ -104,4 +102,4 @@ A few things to note about this helper:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Figma Plugin API](https://www.figma.com/plugin-docs/) - learn about the Figma plugin API.
-- [OpenAI API](https://platform.openai.com/docs/guides/gpt) - learn about GPT APIs.
+- [Cohere API](https://docs.cohere.com/) - learn about Cohere API.
