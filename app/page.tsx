@@ -29,6 +29,7 @@ async function streamAIResponse(body: z.infer<typeof CompletionRequestBody>) {
 
 export default function Plugin() {
   const [completion, setCompletion] = useState("");
+  const [systemRole, setSystemRole] = useState("");
 
   // This function calls our API and handles the streaming response.
   // This ends up building the text up and using React state to update the UI.
@@ -38,16 +39,14 @@ export default function Plugin() {
 
     if (!layers.length) {
       figmaAPI.run(async (figma) => {
-        figma.notify(
-          "Please select a layer with text in it to generate a poem.",
-          { error: true },
-        );
+        figma.notify("Please select a layer with text in it.", { error: true });
       });
       return;
     }
 
     const reader = await streamAIResponse({
       layers,
+      systemRole, // Pass systemRole to streamAIResponse
     });
 
     let text = "";
@@ -68,16 +67,16 @@ export default function Plugin() {
 
     if (!layers.length) {
       figmaAPI.run(async (figma) => {
-        figma.notify(
-          "Please select a layer with text in it to generate a poem.",
-          { error: true },
-        );
+        figma.notify("Please select a layer with text in it.", {
+          error: true,
+        });
       });
       return;
     }
 
     const reader = await streamAIResponse({
       layers,
+      systemRole,
     });
 
     let text = "";
@@ -122,7 +121,7 @@ export default function Plugin() {
 
           return node.id;
         },
-        { nodeID, text, textPosition },
+        { nodeID, text, textPosition }
       );
     };
 
@@ -136,33 +135,74 @@ export default function Plugin() {
     }
   };
 
+  const handleRoleSelection = (
+    role: "spellcheck" | "grammarChecker" | "designer"
+  ) => {
+    setSystemRole(role);
+  };
+
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-900 text-white">
-      <h1 className="text-4xl font-bold mb-5 mt-2">Poem Generator</h1>
-      <div className="text-sm mb-5 text-gray-300">
-        Select a node to create a poem about the text inside of it.
-      </div>
-      <div className="flex flex-row gap-2">
-        <button
-          onClick={onStreamToIFrame}
-          className="mb-5 p-2 px-4 rounded bg-indigo-600 text-white hover:bg-indigo-700"
-        >
-          Generate Poem in iframe
-        </button>
-        <button
-          onClick={onStreamToCanvas}
-          className="mb-5 p-2 px-4 rounded bg-green-600 text-white hover:bg-green-700"
-        >
-          Generate Poem on Canvas
-        </button>
-      </div>
-      {completion && (
-        <div className="border border-gray-600 rounded p-5 bg-gray-800 shadow-lg m-2 text-gray-200">
-          <pre className="whitespace-pre-wrap">
-            <p className="text-md">{completion}</p>
-          </pre>
+      <div className="flex flex-col items-center min-h-screen bg-gray-900 text-white">
+        <h1 className="text-4xl font-bold mb-5 mt-2">
+          AI assistant for designers
+        </h1>
+        <div className="text-sm mb-5 text-gray-300">Select a role:</div>
+        {/* Buttons for role selection */}
+        <div className="flex flex-row gap-2">
+          <button
+            onClick={() => handleRoleSelection("spellcheck")}
+            className={`mb-5 p-2 px-4 rounded ${
+              systemRole === "spellcheck"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-600 text-gray-400"
+            } hover:bg-blue-700`}
+          >
+            Spell Checker
+          </button>
+          <button
+            onClick={() => handleRoleSelection("grammarChecker")}
+            className={`mb-5 p-2 px-4 rounded ${
+              systemRole === "grammarChecker"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-600 text-gray-400"
+            } hover:bg-blue-700`}
+          >
+            Grammar Checker
+          </button>
+          <button
+            onClick={() => handleRoleSelection("designer")}
+            className={`mb-5 p-2 px-4 rounded ${
+              systemRole === "designer"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-600 text-gray-400"
+            } hover:bg-blue-700`}
+          >
+            Designer
+          </button>
         </div>
-      )}
+        <div className="flex flex-row gap-2">
+          <button
+            onClick={onStreamToIFrame}
+            className="mb-5 p-2 px-4 rounded bg-blue-600 text-white hover:bg-blue-700"
+          >
+            Generate in iframe
+          </button>
+          <button
+            onClick={onStreamToCanvas}
+            className="mb-5 p-2 px-4 rounded bg-green-600 text-white hover:bg-green-700"
+          >
+            Generate on Canvas
+          </button>
+        </div>
+        {completion && (
+          <div className="border border-gray-600 rounded p-5 bg-gray-800 shadow-lg m-2 text-gray-200">
+            <pre className="whitespace-pre-wrap">
+              <p className="text-md">{completion}</p>
+            </pre>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
